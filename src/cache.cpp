@@ -1496,9 +1496,13 @@ void Cache::addResource(const Resource &resource, GameEntry &entry,
 	  QBuffer b(&resizedData);
 	  b.open(QIODevice::WriteOnly);
 	  if((image.hasAlphaChannel() && hasAlpha(image)) || resource.type == "screenshot") {
-	    image.save(&b, "png");
+	    if (!image.save(&b, "png")) {
+	      okToAppend = false;
+	    }
 	  } else {
-	    image.save(&b, "jpg", config.jpgQuality);
+	    if(!image.save(&b, "jpg", config.jpgQuality)) {
+	      okToAppend = false;
+	    }
 	  }
 	  b.close();
 	  if(imageData->size() > resizedData.size()) {
